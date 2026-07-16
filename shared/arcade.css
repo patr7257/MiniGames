@@ -1,0 +1,235 @@
+/*
+  arcade.css, the shared "Neon CRT" chrome for every MiniGames game.
+
+  This is the single source of truth for the arcade look. Each game links it
+  BEFORE its own stylesheet:
+
+    <link rel="stylesheet" href="../shared/arcade.css">
+    <link rel="stylesheet" href="snake.css">
+
+  Games use the tokens (var(--arcade-*)) and the chrome classes below for
+  their frame, HUD, buttons, and overlays, and add only game-specific rules in
+  their own file. Do NOT fork or edit this file per game: a restyle happens
+  here once and every game follows.
+
+  The relative url() for the font resolves because this file is served from
+  shared/, next to fonts/. Works identically when opened as file://, served by
+  `npx serve .`, or synced into the website under /arcade/games/shared/.
+*/
+
+@font-face {
+  font-family: "Press Start 2P";
+  src: url("fonts/press-start-2p.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Neon CRT palette */
+  --arcade-bg: #05060c;
+  --arcade-bg-2: #090d1a;
+  --arcade-panel: rgba(9, 14, 26, 0.72);
+  --arcade-fg: #dff6fb;
+  --arcade-muted: #8fbecb;
+  --arcade-accent: #22d3ee;   /* cyan, primary */
+  --arcade-accent-2: #ff2fb0; /* magenta, secondary */
+  --arcade-ok: #39ff14;       /* green, positive values */
+  --arcade-danger: #ff3b3b;   /* red, mines / danger */
+  --arcade-line: rgba(34, 211, 238, 0.5);
+  --arcade-cell: #0d1524;
+  --arcade-cell-line: #173047;
+  --arcade-cell-rev: #060a12;
+
+  --arcade-glow-cyan: 0 0 8px rgba(34, 211, 238, 0.7);
+  --arcade-glow-magenta: 0 0 10px rgba(255, 47, 176, 0.7);
+  --arcade-glow-green: 0 0 10px rgba(57, 255, 20, 0.6);
+
+  --arcade-font: "Press Start 2P", ui-monospace, "Cascadia Mono",
+    "Segoe UI Mono", Menlo, Consolas, monospace;
+
+  --arcade-radius: 10px;
+}
+
+* { box-sizing: border-box; }
+
+/* The page body: dark ground, centered column, pixel font, subtle CRT wash. */
+.arcade-body {
+  margin: 0;
+  min-height: 100dvh;
+  padding: clamp(12px, 3vw, 28px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(14px, 2.5vw, 22px);
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(34, 211, 238, 0.10), transparent 60%),
+    radial-gradient(90% 70% at 50% 110%, rgba(255, 47, 176, 0.10), transparent 60%),
+    var(--arcade-bg);
+  color: var(--arcade-fg);
+  font-family: var(--arcade-font);
+  line-height: 1.5;
+  -webkit-font-smoothing: none;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* CRT scanline overlay. Add <div class="arcade-scanlines"></div> as a direct
+   child of .arcade-body (fixed, full-screen, non-interactive). */
+.arcade-scanlines {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0) 0 2px,
+    rgba(0, 0, 0, 0.26) 2px 4px
+  );
+  mix-blend-mode: multiply;
+}
+
+/* Title / marquee text */
+.arcade-title {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(20px, 4.5vw, 34px);
+  letter-spacing: 0.04em;
+  color: #eafcff;
+  text-shadow:
+    0 0 6px var(--arcade-accent),
+    0 0 22px var(--arcade-accent),
+    4px 4px 0 rgba(255, 47, 176, 0.35);
+}
+.arcade-subtitle {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(8px, 1.4vw, 11px);
+  color: var(--arcade-muted);
+  letter-spacing: 0.08em;
+}
+
+/* HUD: a row of labelled values (score, time, lives, ...). */
+.arcade-hud {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(12px, 3vw, 30px);
+  padding: 12px 22px;
+  border: 1.5px solid var(--arcade-line);
+  border-radius: 8px;
+  background: rgba(6, 10, 20, 0.6);
+  box-shadow: inset 0 0 20px rgba(34, 211, 238, 0.08);
+}
+.arcade-hud-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.arcade-hud-label {
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--arcade-accent);
+}
+.arcade-hud-value {
+  font-size: clamp(12px, 2vw, 16px);
+  color: var(--arcade-ok);
+  font-variant-numeric: tabular-nums;
+  text-shadow: var(--arcade-glow-green);
+}
+
+/* Neon button. Use for Play, Restart, difficulty toggles, etc. */
+.arcade-btn {
+  font-family: var(--arcade-font);
+  font-size: clamp(8px, 1.4vw, 11px);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--arcade-ok);
+  background: transparent;
+  border: 1.5px solid var(--arcade-ok);
+  border-radius: 6px;
+  padding: 12px 20px;
+  cursor: pointer;
+  box-shadow: var(--arcade-glow-green), inset 0 0 10px rgba(57, 255, 20, 0.1);
+  transition: background 0.15s, transform 0.08s, filter 0.15s;
+}
+.arcade-btn:hover { background: rgba(57, 255, 20, 0.12); }
+.arcade-btn:active { transform: translateY(1px); }
+.arcade-btn:focus-visible { outline: 2px solid var(--arcade-accent); outline-offset: 2px; }
+/* Secondary (cyan) and selected states */
+.arcade-btn.is-cyan { color: var(--arcade-accent); border-color: var(--arcade-accent); box-shadow: var(--arcade-glow-cyan), inset 0 0 10px rgba(34, 211, 238, 0.1); }
+.arcade-btn.is-cyan:hover { background: rgba(34, 211, 238, 0.12); }
+.arcade-btn.is-active { color: #05060c; background: var(--arcade-accent); border-color: var(--arcade-accent); box-shadow: var(--arcade-glow-cyan); }
+
+/* The play area: a bordered, glowing panel wrapping the grid or canvas. */
+.arcade-panel {
+  position: relative;
+  padding: clamp(10px, 2vw, 18px);
+  border: 1.5px solid var(--arcade-line);
+  border-radius: var(--arcade-radius);
+  background: var(--arcade-panel);
+  box-shadow:
+    0 0 0 1px rgba(34, 211, 238, 0.15),
+    0 0 22px rgba(34, 211, 238, 0.18),
+    inset 0 0 24px rgba(34, 211, 238, 0.06);
+}
+
+/* Overlay for start / game over / win screens. Toggle .is-open to show it.
+   Structure:
+     <div class="arcade-overlay is-open">
+       <div class="arcade-overlay-box">
+         <h2 class="arcade-overlay-title">Game Over</h2>
+         <p class="arcade-overlay-text">Score 04820</p>
+         <button class="arcade-btn">Play again</button>
+       </div>
+     </div>
+   The overlay covers its positioned parent (give that parent position: relative,
+   e.g. .arcade-panel). */
+.arcade-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: none;
+  place-items: center;
+  padding: 16px;
+  background: rgba(3, 5, 12, 0.82);
+  backdrop-filter: blur(2px);
+  border-radius: inherit;
+}
+.arcade-overlay.is-open { display: grid; }
+.arcade-overlay-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  max-width: 90%;
+}
+.arcade-overlay-title {
+  margin: 0;
+  font-size: clamp(16px, 3.5vw, 26px);
+  color: #eafcff;
+  text-shadow: 0 0 8px var(--arcade-accent), 4px 4px 0 rgba(255, 47, 176, 0.35);
+}
+.arcade-overlay-title.is-danger { color: #ffd8d8; text-shadow: 0 0 10px var(--arcade-danger); }
+.arcade-overlay-text {
+  margin: 0;
+  font-size: clamp(9px, 1.6vw, 12px);
+  color: var(--arcade-muted);
+  line-height: 1.7;
+}
+
+/* On-screen touch controls (D-pad, flag toggle). Hidden on precise pointers,
+   shown on coarse (touch) pointers. Games mark their touch UI with
+   .arcade-touch-only. */
+.arcade-touch-only { display: none; }
+@media (pointer: coarse) {
+  .arcade-touch-only { display: flex; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

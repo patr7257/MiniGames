@@ -1,52 +1,82 @@
 # CLAUDE.md, MiniGames
 
-GitHub description: "Coding games for fun" (`patr7257/MiniGames`, public). This
-repo was set up to hold small hobby games written while learning or practicing
-coding, but as of now it has no working code in it.
+GitHub description: "Coding games for fun" (`patr7257/MiniGames`, public). A
+tiny browser arcade of three simple, zero-build games that are also hosted on
+patrickrobel.dk/arcade.
 
-## Current state (factual)
+## Architecture
 
-The repository has exactly two commits on `main`:
-
-1. `initializing folders for different minigames`, which added IntelliJ IDEA
-   project skeletons for three games: Catan, Pacman, and Snake. Each folder
-   contained only auto generated `.idea` project files and empty stub Java
-   classes (`Main.java`, `Board.java`, `Cell.java`, `Draw.java`, and a
-   game class) with no actual game logic implemented. This commit also added a
-   path called `Minesweeper` as a git submodule reference (gitlink), not as a
-   folder of files.
-2. `Fixing folders etc`, which deleted every file added in the first commit
-   (Catan, Pacman, Snake, and the root `.idea` files). It left the repo with
-   only the `Minesweeper` gitlink.
-
-There is no `.gitmodules` file in this repo and there never has been (checked
-across the full history). Without a `.gitmodules` entry, git has no URL to
-fetch the `Minesweeper` submodule from, and the commit it points to
-(`f3a5ee36b8cc61ce01a781d1b5bef03557a3e17d`) is not present in this repository's
-object store. The result: `Minesweeper` is a broken, orphaned submodule
-reference. Locally it checks out as an empty directory; `git submodule status`
-fails with "no submodule mapping found in .gitmodules for path 'Minesweeper'".
-
-**In short: there is currently no runnable or readable source code in this
-repository.** No game can be built or run from this checkout today.
-
-## Layout
+Each game is a self-contained folder of plain HTML + CSS + JavaScript. No build
+step, no framework, no bundler, no dependencies. The games share ONE stylesheet.
 
 ```
 MiniGames/
-  Minesweeper/   empty directory, broken git submodule link (no content, no .gitmodules)
+  shared/
+    arcade.css                  single source of truth for the Neon CRT look
+    fonts/press-start-2p.woff2  self-hosted pixel font (SIL OFL, OFL.txt)
+  minesweeper/  index.html + minesweeper.js + minesweeper.css
+  snake/        index.html + snake.js + snake.css
+  pacman/       index.html + pacman.js + pacman.css
 ```
 
-## If you are picking this repo back up
+### The shared stylesheet contract
 
-To make it usable again, one of the following is needed first:
+`shared/arcade.css` owns the palette tokens (`--arcade-bg`, `--arcade-accent`,
+`--arcade-accent-2`, `--arcade-ok`, `--arcade-danger`, `--arcade-font`, ...) and
+the chrome classes (`.arcade-body`, `.arcade-scanlines`, `.arcade-title`,
+`.arcade-hud`, `.arcade-btn`, `.arcade-panel`, `.arcade-overlay`,
+`.arcade-touch-only`). Every game:
 
-- Add a real `.gitmodules` file pointing `Minesweeper` at an actual Minesweeper
-  repo URL, then run `git submodule update --init`, or
-- Remove the broken `Minesweeper` gitlink (`git rm Minesweeper`) and commit
-  plain source files directly instead of a submodule, or
-- Recreate the Catan, Pacman, and Snake skeletons (or new games) as regular
-  tracked files with real game logic, since the previous stub code was deleted
-  and contained no working implementation to restore anyway.
+- links it FIRST, then its own stylesheet:
+  `<link rel="stylesheet" href="../shared/arcade.css">`
+  then `<link rel="stylesheet" href="snake.css">`
+- uses the tokens and chrome classes for its frame, HUD, buttons, overlays
+- adds only game-specific rules in its own CSS file
+- does NOT fork or edit `arcade.css`. A restyle happens there once and every
+  game follows. Chrome changes go through a single edit to that file.
 
-Until one of those happens, there is nothing here to build, test, or run.
+The font `url()` inside `arcade.css` is relative (`fonts/press-start-2p.woff2`)
+and resolves because the file is served from `shared/`. This holds in all three
+serving contexts: `file://`, `npx serve .`, and the website.
+
+## How to run
+
+Static, so open a game's `index.html` directly, or serve the root:
+
+```
+npx serve .
+```
+
+then `http://localhost:3000/snake/` (or `/minesweeper/`, `/pacman/`). Serve the
+ROOT, not a single game folder, so `../shared/arcade.css` resolves.
+
+## Website sync contract (patrickrobel.dk)
+
+The site (repo `patr7257/patrickrobelweb`) hosts these games at `/arcade`. It
+copies `shared/`, `minesweeper/`, `snake/`, and `pacman/` into its
+`website/public/arcade/games/` with `pnpm sync:minigames` and embeds each game
+in an iframe at `src="/arcade/games/<game>/index.html"`. Because the iframe URL
+ends in `/index.html`, every relative path inside a game resolves natively, so
+the sync is a plain recursive copy with no path rewriting.
+
+Consequences for anyone changing a game here:
+
+- keep each game a self-contained folder that works when opened directly; the
+  website does no rewriting.
+- after changing a game, the website must re-run `pnpm sync:minigames` and
+  commit the refreshed `public/arcade/games/` copy, or the site keeps serving
+  the old version.
+- games must make NO external network requests (no CDN, no external fonts): the
+  self-hosted pixel font is the only asset, and the site serves everything from
+  its own origin.
+
+## Conventions
+
+- Vanilla JS only, no build tooling. Keep each game SIMPLE and readable.
+- Keyboard controls plus basic touch (swipe or on-screen) via `.arcade-touch-only`.
+- Games call `preventDefault()` on arrow keys and space so the page never scrolls.
+- No emojis in code.
+- No em dashes or en dashes anywhere (code, comments, strings, docs, commits):
+  reword, or use a comma, colon, parentheses, or a single hyphen.
+- Danish text (rare here) uses the real letters aa/oe/ae -> the actual
+  characters, never digraph transliterations.

@@ -1,0 +1,14 @@
+# Editor / IDE
+.idea/
+.vscode/
+*.iml
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Node (only if a game ever adds tooling; games themselves are zero-build)
+node_modules/
+
+# Co-development decision-gate ack (per-session, never committed)
+.claude/.codev-ack
