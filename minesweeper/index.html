@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minesweeper, Arcade</title>
+<link rel="stylesheet" href="../shared/arcade.css">
+<link rel="stylesheet" href="minesweeper.css">
+</head>
+<body class="arcade-body">
+<div class="arcade-scanlines"></div>
+
+<h1 class="arcade-title">Minesweeper</h1>
+<p class="arcade-subtitle">Clear the field. Flag the mines. Do not click red.</p>
+
+<div class="ms-difficulty" role="group" aria-label="Difficulty">
+  <button class="arcade-btn is-active" data-difficulty="easy" type="button">Easy 9x9</button>
+  <button class="arcade-btn is-cyan" data-difficulty="medium" type="button">Medium 16x16</button>
+  <button class="arcade-btn is-cyan" data-difficulty="hard" type="button">Hard 30x16</button>
+</div>
+
+<div class="arcade-hud">
+  <div class="arcade-hud-item">
+    <span class="arcade-hud-label">Mines</span>
+    <span class="arcade-hud-value" id="mine-count">010</span>
+  </div>
+  <div class="arcade-hud-item">
+    <span class="arcade-hud-label">Time</span>
+    <span class="arcade-hud-value" id="time-count">000</span>
+  </div>
+  <button class="arcade-btn" id="restart-btn" type="button">Restart</button>
+</div>
+
+<div class="arcade-panel ms-panel">
+  <div class="ms-grid" id="grid"></div>
+  <div class="arcade-overlay" id="overlay">
+    <div class="arcade-overlay-box">
+      <h2 class="arcade-overlay-title" id="overlay-title">You win</h2>
+      <p class="arcade-overlay-text" id="overlay-text">Time 000</p>
+      <button class="arcade-btn" id="overlay-restart-btn" type="button">Play again</button>
+    </div>
+  </div>
+</div>
+
+<div class="ms-touch-controls arcade-touch-only">
+  <button class="arcade-btn is-cyan" id="flag-mode-btn" type="button">Flag mode: off</button>
+</div>
+
+<p class="ms-note">Left click reveals a cell. Right click toggles a flag. On touch, long press flags a cell, or turn on flag mode to flag with a tap.</p>
+
+<script src="minesweeper.js"></script>
+</body>
+</html>
