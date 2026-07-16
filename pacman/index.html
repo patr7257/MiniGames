@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Pacman, MiniGames Arcade</title>
+  <link rel="stylesheet" href="../shared/arcade.css">
+  <link rel="stylesheet" href="pacman.css">
+</head>
+<body class="arcade-body">
+  <div class="arcade-scanlines"></div>
+
+  <h1 class="arcade-title">Pacman</h1>
+  <p class="arcade-subtitle">Eat pellets, dodge or dodge-then-chomp the ghosts</p>
+
+  <div class="arcade-hud">
+    <div class="arcade-hud-item">
+      <span class="arcade-hud-label">Score</span>
+      <span class="arcade-hud-value" id="score-value">0</span>
+    </div>
+    <div class="arcade-hud-item">
+      <span class="arcade-hud-label">Lives</span>
+      <span class="arcade-hud-value" id="lives-value">3</span>
+    </div>
+    <div class="arcade-hud-item">
+      <span class="arcade-hud-label">Level</span>
+      <span class="arcade-hud-value" id="level-value">1</span>
+    </div>
+  </div>
+
+  <div class="arcade-panel pacman-panel">
+    <canvas id="pacman-canvas" class="pacman-canvas" width="380" height="420"></canvas>
+
+    <div class="arcade-overlay is-open" id="start-overlay">
+      <div class="arcade-overlay-box">
+        <h2 class="arcade-overlay-title">Pacman</h2>
+        <p class="arcade-overlay-text">Arrows or WASD to move, swipe on mobile.<br>Tap, click Start, or press an arrow key to begin.</p>
+        <button class="arcade-btn" id="start-btn">Start</button>
+      </div>
+    </div>
+
+    <div class="arcade-overlay" id="level-overlay">
+      <div class="arcade-overlay-box">
+        <h2 class="arcade-overlay-title">Level Cleared</h2>
+        <p class="arcade-overlay-text" id="level-clear-text">Score 0</p>
+        <button class="arcade-btn is-cyan" id="continue-btn">Continue</button>
+      </div>
+    </div>
+
+    <div class="arcade-overlay" id="gameover-overlay">
+      <div class="arcade-overlay-box">
+        <h2 class="arcade-overlay-title is-danger">Game Over</h2>
+        <p class="arcade-overlay-text" id="final-score-text">Score 0</p>
+        <button class="arcade-btn is-cyan" id="restart-btn">Restart</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="pacman-footer">Move: Arrow keys or WASD, or swipe on touch. Power pellets turn ghosts frightened and edible.</p>
+
+  <script src="pacman.js"></script>
+</body>
+</html>
