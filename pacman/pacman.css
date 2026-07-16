@@ -1,0 +1,31 @@
+/*
+  pacman.css, game-specific rules only. Shared chrome (body, HUD, buttons,
+  overlays, panel) comes from ../shared/arcade.css, loaded before this file.
+*/
+
+.pacman-panel {
+  width: min(380px, 92vw);
+}
+
+/* Fixed internal resolution (380x420 = 19x21 cells at 20px), scaled
+   responsively via CSS while staying crisp. */
+.pacman-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 380px;
+  aspect-ratio: 19 / 21;
+  image-rendering: pixelated;
+  border-radius: calc(var(--arcade-radius) - 4px);
+  touch-action: none;
+  background: #05060c;
+}
+
+.pacman-footer {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(7px, 1.2vw, 10px);
+  color: var(--arcade-muted);
+  letter-spacing: 0.05em;
+  max-width: 420px;
+}
