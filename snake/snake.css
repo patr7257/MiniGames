@@ -1,0 +1,29 @@
+/*
+  snake.css, game-specific rules only. Shared chrome (body, HUD, buttons,
+  overlays, panel) comes from ../shared/arcade.css, loaded before this file.
+*/
+
+.snake-panel {
+  width: min(480px, 92vw);
+}
+
+/* Fixed internal resolution (480x480), scaled responsively via CSS. */
+.snake-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 480px;
+  aspect-ratio: 1 / 1;
+  image-rendering: pixelated;
+  border-radius: calc(var(--arcade-radius) - 4px);
+  touch-action: none;
+}
+
+.snake-footer {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(7px, 1.2vw, 10px);
+  color: var(--arcade-muted);
+  letter-spacing: 0.05em;
+  max-width: 480px;
+}
