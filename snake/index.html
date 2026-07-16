@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Snake, MiniGames Arcade</title>
+  <link rel="stylesheet" href="../shared/arcade.css">
+  <link rel="stylesheet" href="snake.css">
+</head>
+<body class="arcade-body">
+  <div class="arcade-scanlines"></div>
+
+  <h1 class="arcade-title">Snake</h1>
+  <p class="arcade-subtitle">Eat, grow, do not bite yourself</p>
+
+  <div class="arcade-hud">
+    <div class="arcade-hud-item">
+      <span class="arcade-hud-label">Score</span>
+      <span class="arcade-hud-value" id="score-value">0</span>
+    </div>
+    <div class="arcade-hud-item">
+      <span class="arcade-hud-label">Best</span>
+      <span class="arcade-hud-value" id="best-value">0</span>
+    </div>
+  </div>
+
+  <div class="arcade-panel snake-panel">
+    <canvas id="snake-canvas" class="snake-canvas" width="480" height="480"></canvas>
+
+    <div class="arcade-overlay is-open" id="start-overlay">
+      <div class="arcade-overlay-box">
+        <h2 class="arcade-overlay-title">Snake</h2>
+        <p class="arcade-overlay-text">Arrows or WASD to move, swipe on mobile.<br>Press space or tap to start.</p>
+        <button class="arcade-btn" id="start-btn">Start</button>
+      </div>
+    </div>
+
+    <div class="arcade-overlay" id="game-over-overlay">
+      <div class="arcade-overlay-box">
+        <h2 class="arcade-overlay-title is-danger">Game Over</h2>
+        <p class="arcade-overlay-text" id="final-score-text">Score 0</p>
+        <button class="arcade-btn is-cyan" id="restart-btn">Restart</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="snake-footer">Move: Arrow keys or WASD. Restart: Space, tap, or the button above.</p>
+
+  <script src="snake.js"></script>
+</body>
+</html>
